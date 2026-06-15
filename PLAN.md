@@ -49,7 +49,7 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 - [x] **2.2** `backend/main.py` — FastAPI app + `/health` endpoint + CORS
 - [x] **2.3** `backend/core/config.py` — Pydantic Settings, `.env` reading
 - [x] **2.4** `backend/models/schemas.py` — `QueryRequest`, `QueryResponse`, `SourceChunk`
-- [ ] **2.5** `backend/core/errors.py` — `RetryableError`, `NonRetryableError`
+- [x] **2.5** `backend/core/errors.py` — `RetryableError`, `NonRetryableError`
 
 > Verification: `GET http://localhost:8000/health` → `{"status": "ok"}`
 
