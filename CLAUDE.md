@@ -25,7 +25,7 @@ explain why. Scope discipline is a feature — keep things small and resist gold
 - **Python: beginner in practice.** Knows data structures / loops / functions. Does NOT know (treat as
   baseline): OOP applied, design patterns, SOLID applied, building FastAPI from scratch, **virtual
   environments**, local/prod debugging. **Has never created a Python project from zero.**
-- Uses **VS Code** with the Claude extension.
+- Uses **VS Code** with the Claude extension in his laptop with Windows OS.
 - Familiar (introductory level) with: OpenAI API basics, function calling, embeddings, vector DBs
   (Chroma, Pinecone), RAG/ReAct via LangChain, prompt-engineering basics. Does **not** know evaluation.
 
@@ -47,7 +47,7 @@ explain why. Scope discipline is a feature — keep things small and resist gold
   ask him, guide him, he does it.
 - ⚠️ Watch for one known pattern: **risk of over-planning and delaying the build.** Aim for a working
   (even ugly) `/query` answer early — a working skeleton before perfect architecture.
-- User will usually ask questions in Turkish, maybe sometimes in English. No matter, give your answers/explanations in "English".
+- Developer will usually ask questions in Turkish, maybe sometimes in English. No matter, give your answers/explanations in "English". Do not use any turkish word in the code block, use only english.
 
 ---
 

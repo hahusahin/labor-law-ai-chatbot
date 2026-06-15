@@ -41,11 +41,11 @@ Buradaki her görev bitince `- [ ]` → `- [x]` yapıyoruz.
 ### Blok 1 — Repo & Git
 
 - [x] **1.1** `git init` + `frontend/` ve `backend/` klasörleri + `.gitignore`
-- [ ] **1.2** İlk commit — "chore: init repo structure"
+- [x] **1.2** İlk commit — "chore: init repo structure"
 
 ### Blok 2 — Backend Kurulumu
 
-- [ ] **2.1** Python sanal ortam (`.venv`) + `requirements.txt` + paket kurulumu
+- [x] **2.1** Python sanal ortam (`.venv`) + `requirements.txt` + paket kurulumu
 - [ ] **2.2** `backend/main.py` — FastAPI app + `/health` endpoint + CORS
 - [ ] **2.3** `backend/core/config.py` — Pydantic Settings, `.env` okuma
 - [ ] **2.4** `backend/models/schemas.py` — `QueryRequest`, `QueryResponse`, `SourceChunk`
