@@ -1,13 +1,11 @@
-import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from core.config import settings
+
 app = FastAPI(title="Labor Law AI Service", version="1.0.0")
 
-origins = ["http://localhost:3000"]
-frontend_url = os.getenv("FRONTEND_URL")
-if frontend_url:
-    origins.append(frontend_url)
+origins = list({settings.frontend_url, "http://localhost:3000"})
 
 app.add_middleware(
     CORSMiddleware,

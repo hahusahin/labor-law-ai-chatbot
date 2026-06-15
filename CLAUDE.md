@@ -34,7 +34,10 @@ explain why. Scope discipline is a feature — keep things small and resist gold
 - Break everything into **very small, commit-sized sub-tasks** — each small enough to review,
   understand, and commit on its own. No large code dumps.
 - Loop: **propose a tiny task → implement it → explain what & why (teach the FastAPI / Python /
-  design-pattern / abstraction concepts) → he reviews & asks → next task.**
+  design-pattern / abstraction concepts) → he reviews & asks questions → he explicitly approves
+  ("looks good", "onayladım", "commit" etc.) → THEN mark the subtask `[x]` in PLAN.md AND remind
+  him to commit with a suggested message → next task.**
+- **Never mark a task done or suggest a commit without his explicit approval.** Wait for it.
 - **All setup/tooling steps are done by the developer himself, with you guiding by asking.** Do NOT run
   terminal commands or create folders autonomously. Instead say e.g. "now we create a folder named X;
   run this command" and wait for his confirmation, explaining what each step does and why. He has
