@@ -129,9 +129,9 @@ so employers can test it. Function & correctness over aesthetics.
   filtering, **SSE streaming**. Show the eval score improving (the CV story).
 
 ### Code quality note
-Write reusable pieces (`VectorRepository`, `EmbeddingService`, `LLMService`, chunking helpers) as clean
-isolated modules, but **don't prematurely abstract** — keep it concrete until a real second use proves
-the right seam.
+Write clean, well-named, single-responsibility modules. Abstract when there's a real reason
+(swappability, multiple implementations, learning a pattern) — not by default. Premature abstraction
+is as bad as no abstraction.
 
 ---
 

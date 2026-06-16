@@ -59,7 +59,7 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 
 ### Block 4 — Services Layer
 
-- [ ] **4.1** `backend/services/embedding_service.py` — Gemini embeddings
+- [x] **4.1** `backend/services/embedding_service.py` — Gemini embeddings
 - [ ] **4.2** `backend/services/llm_service.py` — Gemini 2.5 Flash + retry/backoff (tenacity)
 
 ### Block 5 — Ingest Script
