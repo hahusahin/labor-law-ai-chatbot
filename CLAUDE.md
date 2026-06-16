@@ -49,6 +49,8 @@ explain why. Scope discipline is a feature — keep things small and resist gold
   still explained step-by-step for him to run himself. He has **never set up a Python project** —
   never assume Python tooling knowledge (virtualenv, pip, running servers, Docker); explain these.
 - Teaching the backend/Python/design-pattern fundamentals is an explicit goal, not a side effect.
+- **When a 3rd-party SDK or external API method appears for the first time**, explain it in chat:
+  what the method does, its key parameters, and what it returns. Do not put this in code comments.
 - **When making a design/architecture decision, briefly explain:** why this approach, what the
   main alternative(s) were, and when you'd pick the other. Keep it tight — 2–4 sentences, not a
   lecture. Only when the decision is non-obvious or when a real trade-off was made.
@@ -59,7 +61,11 @@ explain why. Scope discipline is a feature — keep things small and resist gold
 - ⚠️ Watch for one known pattern: **risk of over-planning and delaying the build.** Aim for a working
   (even ugly) `/query` answer early — a working skeleton before perfect architecture.
 - Developer will usually ask questions in Turkish, maybe sometimes in English. No matter, give your answers/explanations in "English". Do not use any turkish word in the code block, use only english.
-
+- **Gemini API code:** Always use the `.claude/skills/gemini-api-python` skill
+  when writing or editing any Gemini call (generation, embeddings, streaming).
+  NEVER use the deprecated `google-generativeai` SDK — the SDK is `google-genai`
+  (`from google import genai`, `client.models.generate_content(...)`). Stay within
+  the Gemini Free tier; only use Free-tier-eligible models.
 ---
 
 ## 4. The spec (settled decisions)
@@ -142,7 +148,7 @@ is as bad as no abstraction.
 | Domain | Turkish labour law (iş hukuku) |
 | RAG pattern | Curated fixed base, no user upload (Phase 1) |
 | Vector DB | Pinecone (free tier), abstracted behind a repository |
-| LLM + embeddings | Google Gemini (free tier, no credit card), Gemini 2.5 Flash |
+| LLM + embeddings | Google Gemini (Free tier, no credit card). LLM: current Free-tier Flash model — verify in AI Studio, do NOT hardcode an outdated name. Embeddings: gemini-embedding-001 (text, task_type support) |
 | Main app | Next.js (frontend + thin gateway API route, no logic) |
 | AI service | Python + FastAPI, layered (routes → services → repositories → core → models) |
 | Ingest | Separate offline CLI script; article/clause-aware chunking + metadata |

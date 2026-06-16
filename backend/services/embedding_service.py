@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from openai import OpenAI
 
-GEMINI_EMBEDDING_MODEL = "models/text-embedding-004"
+GEMINI_EMBEDDING_MODEL = "gemini-embedding-001"
 OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
+EMBEDDING_DIMENSION = 3072
 
 
 class EmbeddingService(ABC):
@@ -17,10 +19,13 @@ class EmbeddingService(ABC):
 
     @abstractmethod
     def embed(self, text: str) -> list[float]:
-        """Embed a single text string into a vector."""
+        """Embed a single query string. Used at query time."""
 
     def embed_batch(self, texts: list[str]) -> list[list[float]]:
-        """Embed multiple texts. Override for provider-native batching."""
+        """Embed multiple document strings. Used at ingest time.
+
+        Default: loops over embed(). Override for provider-native batching.
+        """
         return [self.embed(text) for text in texts]
 
 
@@ -29,20 +34,39 @@ class EmbeddingService(ABC):
 # ---------------------------------------------------------------------------
 
 class GeminiEmbeddingService(EmbeddingService):
+    """Gemini text embedding using gemini-embedding-001.
+
+    Uses asymmetric retrieval: embed() applies RETRIEVAL_QUERY (for user
+    questions at query time), embed_batch() applies RETRIEVAL_DOCUMENT (for
+    legislation chunks at ingest time). This distinction improves RAG retrieval
+    quality as the model optimises each vector for its intended use.
+
+    Vectors are 3072-dimensional (the model default) and arrive pre-normalized.
+    The Pinecone index must be created with dimension=3072.
+    """
+
     def __init__(self, api_key: str) -> None:
-        genai.configure(api_key=api_key)
+        self._client = genai.Client(api_key=api_key)
 
     @property
     def dimension(self) -> int:
-        return 768
+        return EMBEDDING_DIMENSION
 
     def embed(self, text: str) -> list[float]:
-        response = genai.embed_content(model=GEMINI_EMBEDDING_MODEL, content=text)
-        return response["embedding"]
+        result = self._client.models.embed_content(
+            model=GEMINI_EMBEDDING_MODEL,
+            contents=[text],
+            config=types.EmbedContentConfig(task_type="RETRIEVAL_QUERY"),
+        )
+        return result.embeddings[0].values
 
     def embed_batch(self, texts: list[str]) -> list[list[float]]:
-        response = genai.embed_content(model=GEMINI_EMBEDDING_MODEL, content=texts)
-        return response["embedding"]
+        result = self._client.models.embed_content(
+            model=GEMINI_EMBEDDING_MODEL,
+            contents=texts,
+            config=types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT"),
+        )
+        return [e.values for e in result.embeddings]
 
 
 # ---------------------------------------------------------------------------
@@ -50,10 +74,11 @@ class GeminiEmbeddingService(EmbeddingService):
 # ---------------------------------------------------------------------------
 
 class OpenAIEmbeddingService(EmbeddingService):
-    """
-    Not used in production for this project (costs money).
-    Included to illustrate how frontier embedding APIs compare.
-    Requires OPENAI_API_KEY in .env.
+    """OpenAI text embedding — same interface, different provider.
+
+    Not used in production for this project (costs money / requires credit card).
+    Included to illustrate how the abstraction makes the provider swappable.
+    embed_batch() uses the base class loop default — no override needed.
     """
 
     def __init__(self, api_key: str) -> None:
@@ -69,10 +94,3 @@ class OpenAIEmbeddingService(EmbeddingService):
             input=text,
         )
         return response.data[0].embedding
-
-    def embed_batch(self, texts: list[str]) -> list[list[float]]:
-        response = self._client.embeddings.create(
-            model=OPENAI_EMBEDDING_MODEL,
-            input=texts,
-        )
-        return [item.embedding for item in response.data]
