@@ -1,4 +1,4 @@
-# CLAUDE.md — Turkish Labour Law RAG Assistant
+﻿# CLAUDE.md — Turkish Labour Law RAG Assistant
 
 This file is the single source of truth for this project. The decisions below are **settled** — do not
 re-open them unless the developer explicitly asks. Read §1–§3 to know how to behave; §4 is the spec.
@@ -28,6 +28,9 @@ explain why. Scope discipline is a feature — keep things small and resist gold
 - Uses **VS Code** with the Claude extension in his laptop with Windows OS.
 - Familiar (introductory level) with: OpenAI API basics, function calling, embeddings, vector DBs
   (Chroma, Pinecone), RAG/ReAct via LangChain, prompt-engineering basics. Does **not** know evaluation.
+- Has **some familiarity with C# / ASP.NET** — knows concepts like DI containers, interfaces, abstract
+  classes, design patterns from that world. Use ASP.NET analogies when teaching backend design patterns
+  (e.g. "this is like `IRepository` in ASP.NET", "like `AddScoped<>` in Program.cs").
 
 ## 3. How we work together (the working contract)
 
@@ -35,15 +38,20 @@ explain why. Scope discipline is a feature — keep things small and resist gold
   understand, and commit on its own. No large code dumps.
 - Loop: **propose a tiny task → implement it → explain what & why (teach the FastAPI / Python /
   design-pattern / abstraction concepts) → he reviews & asks questions → he explicitly approves
-  ("looks good", "onayladım", "commit" etc.) → THEN mark the subtask `[x]` in PLAN.md AND remind
-  him to commit with a suggested message → next task.**
-- **Never mark a task done or suggest a commit without his explicit approval.** Wait for it.
-- **All setup/tooling steps are done by the developer himself, with you guiding by asking.** Do NOT run
-  terminal commands or create folders autonomously. Instead say e.g. "now we create a folder named X;
-  run this command" and wait for his confirmation, explaining what each step does and why. He has
-  **never set up a Python project** — never assume Python tooling knowledge (virtualenv, pip, running
-  servers, Docker); explain these explicitly.
+  ("looks good", "onayladım", "commit" etc.) → THEN **you** create the git commit AND mark the
+  subtask `[x]` in PLAN.md → introduce the next task (what it is, why, how) → he picks up from
+  there.**
+- **Never commit or mark a task done without his explicit approval.** Wait for it.
+- **He never commits manually.** Once he approves, you run `git commit` with a descriptive message.
+- **File/folder creation:** Claude can create files and folders autonomously using tools — no need to
+  wait for the developer to run `mkdir`. Always announce what was created and why. Terminal commands
+  that affect the developer's environment (activating venv, installing packages, running servers) are
+  still explained step-by-step for him to run himself. He has **never set up a Python project** —
+  never assume Python tooling knowledge (virtualenv, pip, running servers, Docker); explain these.
 - Teaching the backend/Python/design-pattern fundamentals is an explicit goal, not a side effect.
+- **When making a design/architecture decision, briefly explain:** why this approach, what the
+  main alternative(s) were, and when you'd pick the other. Keep it tight — 2–4 sentences, not a
+  lecture. Only when the decision is non-obvious or when a real trade-off was made.
 - **Secrets:** API keys go in a git-ignored `.env`, set by him. Never commit secrets; never have him
   paste real keys into chat. Getting the Pinecone API key + index and the Gemini API key (Google AI
   Studio, no credit card) is just part of the build — handle it as a normal task when its turn comes:

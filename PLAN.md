@@ -55,7 +55,7 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 
 ### Block 3 — Repository Layer
 
-- [ ] **3.1** `backend/repositories/vector_repository.py` — abstract class + `PineconeRepository`
+- [x] **3.1** `backend/repositories/vector_repository.py` — abstract class + `PineconeRepository`
 
 ### Block 4 — Services Layer
 
