@@ -7,7 +7,7 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_ex
 
 from core.errors import NonRetryableError, RetryableError
 
-GEMINI_GENERATION_MODEL = "gemini-3.5-flash"
+GEMINI_GENERATION_MODEL = "gemini-3.5-flash"  # "gemini-3.5-flash" OR "gemini-3.1-flash-lite"
 OPENAI_GENERATION_MODEL = "gpt-4o-mini"
 TIMEOUT_SECONDS = 30
 MAX_RETRIES = 3

@@ -73,8 +73,8 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 
 ### Block 6 — Query Endpoint
 
-- [ ] **6.1** `backend/routes/query.py` — `/query` POST endpoint (embed → retrieve → LLM → response)
-- [ ] **6.2** Manual test via Postman / curl → real answer comes back
+- [x] **6.1** `backend/routes/query.py` — `/query` POST endpoint (embed → retrieve → LLM → response)
+- [x] **6.2** Manual test via Postman / curl → real answer comes back
 
 > Verification: `POST /query {"question":"How many days annual leave?"}` → answer with sources
 

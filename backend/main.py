@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from core.config import settings
+from routes.query import router as query_router
 
 app = FastAPI(title="Labor Law AI Service", version="1.0.0")
 
@@ -13,6 +14,9 @@ app.add_middleware(
     allow_methods=["POST", "GET"],
     allow_headers=["*"],
 )
+
+
+app.include_router(query_router)
 
 
 @app.get("/health")

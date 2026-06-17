@@ -8,6 +8,7 @@ class QueryRequest(BaseModel):
 class SourceChunk(BaseModel):
     law: str
     article_number: str
+    article_type: str = "Madde"
     article_title: str | None = None
     text: str
 
