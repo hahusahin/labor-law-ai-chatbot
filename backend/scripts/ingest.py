@@ -3,9 +3,12 @@ Offline ingest: PDF legislation → article chunks → Gemini embeddings → Pin
 
 Run from the backend/ directory:
     python scripts/ingest.py <path-to-pdf>
-    python scripts/ingest.py <path-to-pdf> --clear   # deletes all vectors first
+    python scripts/ingest.py <path-to-pdf> --law-name "1475 sayılı İş Kanunu" --law-number 1475
+    python scripts/ingest.py <path-to-pdf> --articles 14 17   # only ingest specific articles
+    python scripts/ingest.py <path-to-pdf> --clear            # deletes all vectors first
 """
 
+import argparse
 import re
 import sys
 import time
@@ -19,8 +22,6 @@ from core.config import settings
 from repositories.vector_repository import PineconeRepository
 from services.embedding_service import GeminiEmbeddingService
 
-LAW_NAME = "İş Kanunu"
-LAW_NUMBER = "4857"
 BATCH_SIZE = 5
 
 # Captures optional "Geçici " or "Ek " prefix before "Madde X -"
@@ -28,13 +29,13 @@ BATCH_SIZE = 5
 ARTICLE_PATTERN = re.compile(r"(Geçici\s+|Ek\s+)?Madde\s+(\d+)\s*[–\-]")
 
 
-def _article_id(prefix: str, number: int) -> str:
+def _article_id(prefix: str, number: int, law_number: str) -> str:
     p = prefix.strip()
     if p.startswith("Geçici") or p.startswith("geçici"):
-        return f"is-kanunu-gecici-madde-{number}"
+        return f"{law_number}-gecici-madde-{number}"
     if p.startswith("Ek"):
-        return f"is-kanunu-ek-madde-{number}"
-    return f"is-kanunu-madde-{number}"
+        return f"{law_number}-ek-madde-{number}"
+    return f"{law_number}-madde-{number}"
 
 
 def _article_type(prefix: str) -> str:
@@ -56,7 +57,11 @@ def extract_text(pdf_path: str) -> str:
     return "\n".join(parts)
 
 
-def split_into_articles(text: str) -> list[dict]:
+def split_into_articles(
+    text: str,
+    law_number: str,
+    only_articles: set[int] | None = None,
+) -> list[dict]:
     matches = list(ARTICLE_PATTERN.finditer(text))
 
     if not matches:
@@ -66,6 +71,10 @@ def split_into_articles(text: str) -> list[dict]:
     for i, match in enumerate(matches):
         prefix = match.group(1) or ""
         number = int(match.group(2))
+
+        if only_articles and number not in only_articles:
+            continue
+
         start = match.start()
         end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
         body = text[start:end].strip()
@@ -74,7 +83,7 @@ def split_into_articles(text: str) -> list[dict]:
         title = pre_lines[-1] if pre_lines and len(pre_lines[-1]) < 80 else ""
 
         articles.append({
-            "vector_id": _article_id(prefix, number),
+            "vector_id": _article_id(prefix, number, law_number),
             "article_number": number,
             "article_type": _article_type(prefix),
             "title": title,
@@ -84,14 +93,19 @@ def split_into_articles(text: str) -> list[dict]:
     return articles
 
 
-def build_vectors(articles: list[dict], embeddings: list[list[float]]) -> list[dict]:
+def build_vectors(
+    articles: list[dict],
+    embeddings: list[list[float]],
+    law_name: str,
+    law_number: str,
+) -> list[dict]:
     return [
         {
             "id": a["vector_id"],
             "values": emb,
             "metadata": {
-                "law": LAW_NAME,
-                "law_number": LAW_NUMBER,
+                "law": law_name,
+                "law_number": law_number,
                 "article_number": a["article_number"],
                 "article_type": a["article_type"],
                 "title": a["title"],
@@ -102,12 +116,18 @@ def build_vectors(articles: list[dict], embeddings: list[list[float]]) -> list[d
     ]
 
 
-def ingest(pdf_path: str, clear: bool = False) -> None:
+def ingest(
+    pdf_path: str,
+    law_name: str,
+    law_number: str,
+    only_articles: set[int] | None,
+    clear: bool,
+) -> None:
     print(f"[1/4] Extracting text from: {pdf_path}")
     text = extract_text(pdf_path)
 
     print("[2/4] Splitting into articles...")
-    articles = split_into_articles(text)
+    articles = split_into_articles(text, law_number, only_articles)
     total = len(articles)
     regular = sum(1 for a in articles if a["article_type"] == "Madde")
     gecici = sum(1 for a in articles if a["article_type"] == "Geçici Madde")
@@ -133,7 +153,7 @@ def ingest(pdf_path: str, clear: bool = False) -> None:
         label = f"articles {i + 1}–{min(i + BATCH_SIZE, total)}"
 
         embeddings = embedding_service.embed_batch(batch_texts)
-        vectors = build_vectors(batch_articles, embeddings)
+        vectors = build_vectors(batch_articles, embeddings, law_name, law_number)
         repo.upsert(vectors)
         print(f"      Embedded + upserted {label}")
 
@@ -144,7 +164,15 @@ def ingest(pdf_path: str, clear: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python scripts/ingest.py <path-to-pdf> [--clear]")
-        sys.exit(1)
-    ingest(sys.argv[1], clear="--clear" in sys.argv)
+    parser = argparse.ArgumentParser(
+        description="Ingest a PDF law into Pinecone."
+    )
+    parser.add_argument("pdf", help="Path to the PDF file")
+    parser.add_argument("--law-name", default="İş Kanunu", help="Human-readable law name stored in metadata")
+    parser.add_argument("--law-number", default="4857", help="Law number used in vector IDs (e.g. 4857, 1475)")
+    parser.add_argument("--articles", nargs="+", type=int, metavar="N", help="Only ingest these article numbers (e.g. --articles 14)")
+    parser.add_argument("--clear", action="store_true", help="Delete all existing vectors before ingesting")
+    args = parser.parse_args()
+
+    only = set(args.articles) if args.articles else None
+    ingest(args.pdf, args.law_name, args.law_number, only, args.clear)

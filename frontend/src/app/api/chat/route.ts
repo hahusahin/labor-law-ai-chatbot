@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ question: body.question }),
-    signal: AbortSignal.timeout(35_000),
+    signal: AbortSignal.timeout(100_000),
   });
 
   if (!upstream.ok) {
