@@ -64,10 +64,10 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 
 ### Block 5 — Ingest Script
 
-- [ ] **5.1** Pinecone account + index + API key (developer sets up, we guide)
-- [ ] **5.2** Gemini API key (Google AI Studio, no credit card)
-- [ ] **5.3** `backend/scripts/ingest.py` — article-aware chunking → embed → write to Pinecone
-- [ ] **5.4** Run first ingest + verify vectors in Pinecone console
+- [x] **5.1** Pinecone account + index + API key (developer sets up, we guide)
+- [x] **5.2** Gemini API key (Google AI Studio, no credit card)
+- [x] **5.3** `backend/scripts/ingest.py` — article-aware chunking → embed → write to Pinecone
+- [x] **5.4** Run first ingest + verify vectors in Pinecone console
 
 > Verification: vectors visible in Pinecone dashboard
 
