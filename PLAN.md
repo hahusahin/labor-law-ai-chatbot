@@ -80,7 +80,7 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 
 ### Block 7 — Frontend
 
-- [ ] **7.1** `npx create-next-app@latest frontend` (TypeScript + Tailwind + App Router)
+- [x] **7.1** `npx create-next-app@latest frontend` (TypeScript + Tailwind + App Router)
 - [ ] **7.2** `frontend/src/app/api/chat/route.ts` — thin gateway (Next.js → FastAPI proxy)
 - [ ] **7.3** `frontend/src/app/page.tsx` — full-page chat UI (empty state + example questions + loading)
 - [ ] **7.4** Source article chip — each answer shows "Labour Law Article 53" → click reveals article text

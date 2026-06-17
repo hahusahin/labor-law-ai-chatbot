@@ -66,6 +66,10 @@ explain why. Scope discipline is a feature — keep things small and resist gold
   NEVER use the deprecated `google-generativeai` SDK — the SDK is `google-genai`
   (`from google import genai`, `client.models.generate_content(...)`). Stay within
   the Gemini Free tier; only use Free-tier-eligible models.
+- **Next.js:** This project uses Next.js 16 (App Router). Don't assume 13/14/15
+  patterns; for version-sensitive code, verify the installed version in
+  package.json and fetch the current docs (https://nextjs.org/docs/app) instead
+  of relying on memory.
 ---
 
 ## 4. The spec (settled decisions)
