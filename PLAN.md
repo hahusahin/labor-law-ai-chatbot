@@ -87,9 +87,9 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 
 ### Block 8 — Security + Docker Compose
 
-- [ ] **8.1** Shared API key middleware — FastAPI rejects requests without `X-API-Key`; Next.js gateway sends it
-- [ ] **8.2** `docker-compose.yml` — frontend (3000) + backend (8000) on internal network
-- [ ] **8.3** End-to-end test with `docker compose up`
+- [x] **8.1** Shared API key middleware — FastAPI rejects requests without `X-API-Key`; Next.js gateway sends it
+- [x] **8.2** `docker-compose.yml` — frontend (3000) + backend (8000) on internal network
+- [x] **8.3** End-to-end test with `docker compose up`
 
 > Verification: `http://localhost:3000` opens, question is typed, sourced answer comes back ✓
 

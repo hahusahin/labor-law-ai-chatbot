@@ -43,6 +43,8 @@ explain why. Scope discipline is a feature — keep things small and resist gold
   there.**
 - **Never commit or mark a task done without his explicit approval.** Wait for it.
 - **He never commits manually.** Once he approves, you run `git commit` with a descriptive message.
+- **Commit attribution:** commits are authored under **his** git identity only. Do **NOT** add a
+  `Co-Authored-By` trailer or any Claude/AI attribution to commit messages.
 - **File/folder creation:** Claude can create files and folders autonomously using tools — no need to
   wait for the developer to run `mkdir`. Always announce what was created and why. Terminal commands
   that affect the developer's environment (activating venv, installing packages, running servers) are
