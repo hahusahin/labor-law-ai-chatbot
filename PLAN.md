@@ -100,6 +100,11 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 - [ ] **9.1** 15–20 `(question → expected article)` test pairs as a JSON file
 - [ ] **9.2** `backend/scripts/evaluate.py` — retrieval hit rate measurement
 - [ ] **9.3** Answer correctness score + report
+- [ ] **9.4** Relevance threshold (abstention) — gate retrieval by similarity `min_score`; off-topic
+      questions return the "not enough info" answer with **zero** sources (today top-k always returns
+      5 chunks, so irrelevant questions still show 5 misleading source chips). Inspect real score
+      distributions (relevant vs off-topic) and tune the cutoff from eval data — do NOT hardcode a
+      magic number. Fixes both backend (no junk context to LLM) and UI (no junk chips) in one change.
 
 ---
 
