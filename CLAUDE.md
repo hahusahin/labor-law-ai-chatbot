@@ -125,6 +125,7 @@ so employers can test it. Function & correctness over aesthetics.
 - **Do:** retry with exponential backoff on 429 / transient 5xx (`tenacity`), centralized in
   `LLMService`; **error-class distinction** (retry 429, never retry 400); a **timeout** on the Gemini
   call; frontend loading state + graceful ~30s timeout message.
+- **Shared API key:** FastAPI checks an `X-API-Key` header on every request; Next.js gateway sends it via env var. Stops open abuse of the public backend URL. Per-user auth (JWT/OAuth) is out of scope for Phase 1.
 - **Don't build (document awareness in README instead):** WebSocket (rejected — one-way
   request/response), request queue, distributed rate limiter (Redis), circuit breaker.
 

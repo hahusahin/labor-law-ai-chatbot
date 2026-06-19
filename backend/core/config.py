@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     pinecone_api_key: str
     pinecone_index_name: str
     frontend_url: str = "http://localhost:3000"
+    internal_api_key: str
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
