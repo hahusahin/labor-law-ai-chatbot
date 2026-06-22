@@ -1,85 +1,85 @@
 {
-  "version": 1,
-  "description": "Ground-truth eval set for retrieval + answer correctness. Each question maps to the article(s) that actually contain its answer. Hit = at least one expected article retrieved in top-k (any-match). Article numbers verified against ingested legislation (İş Kanunu 4857 + 1475/14).",
+  "version": 3,
+  "description": "Ground-truth eval set. In-scope questions (non-empty expected_articles) are written the way a real user would type to an AI assistant: a deliberate mix of questions that reuse the legal term (lexical match) and questions phrased around it without the term (semantic match), to test retrieval on both. Off-topic questions (empty expected_articles) are outside the labour-law knowledge base; the correct behavior is to retrieve nothing relevant — they exist to measure abstention and to gather the score distribution used to tune the relevance threshold (task 9.4). Hit = at least one expected article retrieved in top-k (any-match).",
   "items": [
     {
       "id": 1,
-      "question": "Bir yıldan fazla, beş yıldan az kıdemi olan bir işçinin yıllık ücretli izin hakkı kaç gündür?",
+      "question": "Bir yıldır aynı yerde çalışıyorum, yılda kaç gün ücretli iznim var?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "53" }]
     },
     {
       "id": 2,
-      "question": "Yıllık ücretli izne hak kazanmak için en az ne kadar süre çalışmış olmam gerekir?",
+      "question": "Yıllık izne hak kazanmak için en az ne kadar çalışmış olmam gerekir?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "54" }]
     },
     {
       "id": 3,
-      "question": "Kıdem tazminatına hangi koşullarda hak kazanırım ve nasıl hesaplanır?",
+      "question": "İşten çıkarılırsam çalıştığım yıllara karşılık bana toplu bir ödeme yapılır mı, şartları ne?",
       "expected_articles": [{ "law": "1475 sayılı İş Kanunu", "article": "14" }]
     },
     {
       "id": 4,
-      "question": "İki yıldır aynı işyerinde çalışıyorum, işveren sözleşmemi feshederse ihbar süresi kaç haftadır?",
+      "question": "İşveren beni çıkarmadan ne kadar süre önceden haber vermek zorunda?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "17" }]
     },
     {
       "id": 5,
-      "question": "İşveren ücretimi ödemiyor; iş sözleşmemi haklı nedenle derhal feshedebilir miyim?",
+      "question": "Maaşım aylardır geç yatıyor; bu yüzden kendim işten ayrılsam tazminat hakkım olur mu?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "24" }]
     },
     {
       "id": 6,
-      "question": "İşçi işe izinsiz ve mazeretsiz gelmezse işveren sözleşmeyi haklı nedenle hemen feshedebilir mi?",
+      "question": "Bir çalışanım üst üste birkaç gün habersiz işe gelmezse, işveren olarak onu tazminat ödemeden çıkarabilir miyim?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "25" }]
     },
     {
       "id": 7,
-      "question": "İşverenim hamile olduğumu öğrendikten sonra geçerli neden göstermeden iş sözleşmemi feshetti. Ayrımcılık gerekçesiyle kaç aya kadar ücretim tutarında tazminat talep edebilirim?",
+      "question": "Patron hamile olduğumu öğrenince beni geçerli bir sebep göstermeden işten çıkardı. Bu ayrımcılık için ne kadar tazminat isteyebilirim?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "5" }]
     },
     {
       "id": 8,
-      "question": "Fazla çalışma yaptığımda saat ücretim ne kadar zamlı ödenir?",
+      "question": "Fazla mesai yaptığımda saat ücretim ne kadar zamlı ödenir?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "41" }]
     },
     {
       "id": 9,
-      "question": "Kanuna göre haftalık azami çalışma süresi kaç saattir?",
+      "question": "Yasal olarak haftada en fazla kaç saat çalıştırılabilirim?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "63" }]
     },
     {
       "id": 10,
-      "question": "Yedi buçuk saat süren bir iş günü için ara dinlenmesi en az ne kadar olmalıdır?",
+      "question": "8 saatlik bir mesaide ne kadar mola hakkım var?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "68" }]
     },
     {
       "id": 11,
-      "question": "Doğum yaptıktan sonra ne kadar analık izni kullanabilirim ve süt izni hakkım nedir?",
+      "question": "Doğum sonrası ne kadar ücretli izin kullanabilirim, ayrıca bebeğimi emzirmek için süt izni veriliyor mu?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "74" }]
     },
     {
       "id": 12,
-      "question": "Gece çalışması günde en fazla kaç saat olabilir?",
+      "question": "Gece vardiyasında en fazla kaç saat çalıştırılabilirim?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "69" }]
     },
     {
       "id": 13,
-      "question": "İşveren ücretimi ödeme gününden ne kadar süre sonra ödemezse çalışmaktan kaçınabilirim?",
+      "question": "Maaşım zamanında ödenmezse işi bırakma hakkım var mı, kaç gün gecikmesi gerekiyor?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "34" }]
     },
     {
       "id": 14,
-      "question": "İhbar süresi içinde işverenin bana yeni iş arama izni vermesi gerekir mi, günde kaç saat?",
+      "question": "İhbar süresi içinde patron bana yeni iş aramam için izin vermesi gerekir mi?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "27" }]
     },
     {
       "id": 15,
-      "question": "Deneme süreli iş sözleşmesinde deneme süresi en fazla ne kadar olabilir?",
+      "question": "İşe yeni başlarken deneme süresi en fazla ne kadar olabilir?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "15" }]
     },
     {
       "id": 16,
-      "question": "Geçersiz sebeple işten çıkarıldığımı düşünüyorum; mahkeme feshi geçersiz bulursa işveren beni işe başlatmak zorunda mı, başlatmazsa ne kadar tazminat öder?",
+      "question": "Geçersiz bir sebeple işten atıldığımı düşünüyorum; mahkeme beni haklı bulursa işveren geri almak zorunda mı, almazsa ne öder?",
       "expected_articles": [
         { "law": "İş Kanunu", "article": "18" },
         { "law": "İş Kanunu", "article": "21" }
@@ -87,23 +87,48 @@
     },
     {
       "id": 17,
-      "question": "Toplu işçi çıkarmak isteyen işveren bunu önceden kime bildirmek zorundadır?",
+      "question": "İşveren aynı anda çok sayıda işçiyi işten çıkaracaksa bunu önceden kime bildirmek zorunda?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "29" }]
     },
     {
       "id": 18,
-      "question": "Çocuk ve genç işçilerin çalıştırılabilmesi için asgari yaş sınırı nedir?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "71" }]
-    },
-    {
-      "id": 19,
-      "question": "İşveren bana disiplin gerekçesiyle ücret kesme cezası verebilir mi, bir ayda en fazla ne kadar kesebilir?",
+      "question": "Patron disiplin cezası diye maaşımdan kesinti yapabilir mi, bir ayda en fazla ne kadar kesebilir?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "38" }]
     },
     {
+      "id": 19,
+      "question": "Kaç yaşından küçük çocuklar çalıştırılamaz?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "71" }]
+    },
+    {
       "id": 20,
-      "question": "Elli ve daha fazla işçi çalıştıran işyerleri engelli işçi çalıştırmak zorunda mı, oran nedir?",
+      "question": "Çok sayıda personeli olan büyük şirketler engelli çalışan almak zorunda mı?",
       "expected_articles": [{ "law": "İş Kanunu", "article": "30" }]
+    },
+    {
+      "id": 21,
+      "question": "Ev sahibim kira kontratımı süresi dolmadan tek taraflı feshedebilir mi?",
+      "expected_articles": []
+    },
+    {
+      "id": 22,
+      "question": "Bu hafta sonu hava yağmurlu olacak mı?",
+      "expected_articles": []
+    },
+    {
+      "id": 23,
+      "question": "Aracımın muayene cezasını kaç gün içinde ödemem gerekiyor?",
+      "expected_articles": []
+    },
+    {
+      "id": 24,
+      "question": "Gelir vergisi dilimleri bu yıl ne kadar?",
+      "expected_articles": []
+    },
+    {
+      "id": 25,
+      "question": "Bana güzel bir makarna tarifi verir misin?",
+      "expected_articles": []
     }
   ]
 }
