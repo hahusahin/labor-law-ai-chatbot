@@ -11,6 +11,11 @@ router = APIRouter()
 
 TOP_K = 5
 
+OUT_OF_SCOPE_MESSAGE = (
+    "Bu konuya dair mevzuatımda yeterli bilgi bulunmamaktadır. "
+    "Lütfen sorunuzu Türk iş hukuku kapsamında ifade edin."
+)
+
 _embedding_service = GeminiEmbeddingService(api_key=settings.gemini_api_key)
 _llm_service = GeminiLLMService(api_key=settings.gemini_api_key)
 _repo = PineconeRepository(
@@ -47,11 +52,10 @@ def query(request: QueryRequest) -> QueryResponse:
     question_vector = _embedding_service.embed(request.question)
     matches = _repo.query(vector=question_vector, top_k=TOP_K)
 
-    if not matches:
-        return QueryResponse(
-            answer="Bu soruyla ilgili kanun maddesi bulunamadı. Lütfen sorunuzu iş kanunu kapsamında yeniden ifade edin.",
-            sources=[],
-        )
+    # Relevance gate: if even the best match is below the threshold, the question
+    # is out of scope — abstain with zero sources (no junk context, no junk chips).
+    if not matches or matches[0].score < settings.relevance_min_score:
+        return QueryResponse(answer=OUT_OF_SCOPE_MESSAGE, sources=[])
 
     context = _build_context(matches)
 

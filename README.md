@@ -41,10 +41,26 @@ Browser → Vercel (Next.js)
 
 The FastAPI service is layered (routes → services → repositories) with the vector DB abstracted behind an interface — swap Pinecone for another store without touching business logic.
 
+## Evaluation
+
+This RAG app is **measured**, with a reproducible offline eval harness in `backend/eval/`:
+
+- **Ground-truth test set** — 25 natural-language questions (20 answerable + 5 off-topic), each mapped to the article(s) that actually contain the answer, verified against the source legislation.
+- **Two-layer scoring** (retrieval and generation fail independently, so they're measured separately):
+  - *Retrieval* — is the correct article fetched? **recall@5 = 95%, recall@1 = 80%**.
+  - *Answer correctness* — an **LLM-as-judge** grades each generated answer against a source-grounded reference answer: **95% correct**, **90%** citing the right article.
+- **Abstention** — a tuned relevance-score gate makes off-topic questions return *"not in my scope"* with **zero** sources, instead of confidently citing irrelevant law: **100%** on the off-topic set.
+
+```bash
+python eval/evaluate_retrieval.py    # retrieval recall@k
+python eval/evaluate_answers.py      # LLM-as-judge answer correctness
+```
+
+These numbers are the **baseline** — Phase 2 is about measurably improving them.
+
 ## What's next
 
-- **Phase 1.5 — Evaluation:** build a test set of 15–20 (question → expected article) pairs and measure retrieval hit rate and answer correctness.
-- **Phase 2:** hybrid search, reranking, query rewriting, SSE streaming — and show the eval score improving between phases.
+- **Phase 2:** hybrid search, reranking, query rewriting, SSE streaming — re-run the eval and show the score improving between phases.
 
 ## Running locally
 

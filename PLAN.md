@@ -100,7 +100,7 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 - [x] **9.1** 15–20 `(question → expected article)` test pairs as a JSON file
 - [x] **9.2** `backend/eval/evaluate_retrieval.py` — retrieval hit rate measurement (recall@k + off-topic score distribution)
 - [x] **9.3** `backend/eval/evaluate_answers.py` — LLM-as-judge answer correctness + citation + off-topic abstention
-- [ ] **9.4** Relevance threshold (abstention) — gate retrieval by similarity `min_score`; off-topic
+- [x] **9.4** Relevance threshold (abstention) — gate retrieval by similarity `min_score`; off-topic
       questions return the "not enough info" answer with **zero** sources (today top-k always returns
       5 chunks, so irrelevant questions still show 5 misleading source chips). Inspect real score
       distributions (relevant vs off-topic) and tune the cutoff from eval data — do NOT hardcode a
