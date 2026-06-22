@@ -45,10 +45,10 @@ The FastAPI service is layered (routes → services → repositories) with the v
 
 This RAG app is **measured**, with a reproducible offline eval harness in `backend/eval/`:
 
-- **Ground-truth test set** — 25 natural-language questions (20 answerable + 5 off-topic), each mapped to the article(s) that actually contain the answer, verified against the source legislation.
+- **Ground-truth test set** — 32 natural-language questions (27 answerable + 5 off-topic), several adapted from the official Ministry of Labour (CSGB) İş Kanunu FAQ, each mapped to the article(s) that actually contain the answer and verified against the source legislation.
 - **Two-layer scoring** (retrieval and generation fail independently, so they're measured separately):
-  - *Retrieval* — is the correct article fetched? **recall@5 = 95%, recall@1 = 80%**.
-  - *Answer correctness* — an **LLM-as-judge** grades each generated answer against a source-grounded reference answer: **95% correct**, **90%** citing the right article.
+  - *Retrieval* — is the correct article fetched? **recall@5 = 96%, recall@1 = 89%**.
+  - *Answer correctness* — an **LLM-as-judge** grades each generated answer against a source-grounded reference answer: **96% correct**, **93%** citing the right article.
 - **Abstention** — a tuned relevance-score gate makes off-topic questions return *"not in my scope"* with **zero** sources, instead of confidently citing irrelevant law: **100%** on the off-topic set.
 
 ```bash

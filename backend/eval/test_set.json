@@ -1,6 +1,6 @@
 {
-  "version": 5,
-  "description": "Ground-truth eval set. In-scope questions (non-empty expected_articles) carry a reference_answer: a concise gold answer grounded in the ingested legislation text (NOT outside knowledge), used by the LLM-as-judge in 9.3 to grade generated answers. Questions mix lexical and semantic phrasing. Off-topic questions (empty expected_articles, no reference_answer) are outside the knowledge base; the correct behavior is abstention. Retrieval hit = at least one expected article in top-k (any-match).",
+  "version": 6,
+  "description": "Ground-truth eval set. In-scope questions (non-empty expected_articles) carry a reference_answer: a concise gold answer grounded in the ingested legislation text (NOT outside knowledge), used by the LLM-as-judge in 9.3 to grade generated answers. Questions mix lexical and semantic phrasing. ids 26-32 are harder, indirectly-phrased questions adapted from the official CSGB İş Kanunu FAQ (verified against our ingested articles). Off-topic questions (empty expected_articles, no reference_answer) are outside the knowledge base; the correct behavior is abstention. Retrieval hit = at least one expected article in top-k (any-match).",
   "items": [
     {
       "id": 1,
@@ -152,6 +152,51 @@
       "id": 25,
       "question": "Bana güzel bir makarna tarifi verir misin?",
       "expected_articles": []
+    },
+    {
+      "id": 26,
+      "question": "Ücreti zamanında ödenmeyen işçi, gecikme için faiz isteyebilir mi?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "34" }],
+      "reference_answer": "Gününde ödenmeyen ücretler için, ödeme gününden itibaren mevduata uygulanan en yüksek faiz oranı uygulanır."
+    },
+    {
+      "id": 27,
+      "question": "Fazla çalışma karşılığında zamlı ücret yerine serbest zaman kullanmayı seçtim; bu izni ne kadar süre içinde kullanmam gerekir?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "41" }],
+      "reference_answer": "Fazla çalışma veya fazla sürelerle çalışma karşılığında zamlı ücret yerine serbest zaman kullanmayı seçen işçi, bu serbest zamanı altı ay içinde, çalışma süreleri içinde ve ücretinde kesinti olmadan kullanır."
+    },
+    {
+      "id": 28,
+      "question": "Doğum nedeniyle çalışılmayan süreler, yıllık ücretli izne hak kazanmada çalışılmış gibi sayılır mı?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "55" }],
+      "reference_answer": "Kadın işçilerin 74. madde gereğince doğumdan önce ve sonra çalıştırılmadıkları süreler, yıllık ücretli izin hakkının hesabında çalışılmış gibi sayılır."
+    },
+    {
+      "id": 29,
+      "question": "İşveren çalışma şartlarımda esaslı bir değişiklik yapmak isterse buna uymak zorunda mıyım, kabul etmezsem ne olur?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "22" }],
+      "reference_answer": "İşveren çalışma koşullarında esaslı değişikliği ancak yazılı olarak bildirip işçinin altı iş günü içinde yazılı kabulüyle yapabilir; işçi kabul etmezse değişiklik onu bağlamaz, işveren ise ancak geçerli bir nedene dayanarak iş sözleşmesini feshedebilir."
+    },
+    {
+      "id": 30,
+      "question": "İşveren, tatil öncesi/sonrası verdiği izin karşılığında sonradan telafi çalışması yaptırabilir mi, hangi sınırlarla?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "64" }],
+      "reference_answer": "İşveren, zorunlu nedenler veya bayram/tatil ya da işçinin talebiyle verilen izin gibi hallerde çalışılmayan süreler için dört ay içinde telafi çalışması yaptırabilir; bu çalışma fazla çalışma sayılmaz, günde en çok üç saat olabilir ve tatil günlerinde yaptırılamaz."
+    },
+    {
+      "id": 31,
+      "question": "Belirli süreli bir iş sözleşmesiyle çalışıyorsam, işverenin yine de önceden bildirim (ihbar) sürelerine uyması gerekir mi?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "17" }],
+      "reference_answer": "Bildirim (ihbar) süreleri yalnızca belirsiz süreli iş sözleşmelerinin feshi için öngörülmüştür; belirli süreli sözleşmeler süresinin bitiminde kendiliğinden sona erdiği için bu sürelere uyma zorunluluğu yoktur."
+    },
+    {
+      "id": 32,
+      "question": "İşveren, beni ahlak ve iyiniyet kurallarına aykırılık gerekçesiyle işten çıkarırsa kıdem tazminatı alabilir miyim?",
+      "expected_articles": [
+        { "law": "1475 sayılı İş Kanunu", "article": "14" },
+        { "law": "İş Kanunu", "article": "25" }
+      ],
+      "reference_answer": "İşveren feshi 25. maddenin (II) numaralı bendindeki ahlak ve iyiniyet kurallarına aykırılık sebeplerine dayanıyorsa işçi kıdem tazminatına hak kazanamaz; bu sebepler dışındaki işveren fesihlerinde ise (en az bir yıllık kıdem şartıyla) kıdem tazminatı ödenir."
     }
   ]
 }
