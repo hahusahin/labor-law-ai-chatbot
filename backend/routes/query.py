@@ -35,12 +35,17 @@ def _build_context(matches) -> str:
 
 def _build_prompt(question: str, context: str) -> str:
     return (
-        "Sen bir Türk iş hukuku asistanısın. "
-        "Aşağıdaki kanun maddelerine dayanarak soruyu Türkçe olarak yanıtla. "
-        "Yalnızca verilen maddelere dayan; bilgi tabanında yeterli madde yoksa "
-        "'Bu konuya dair mevzuatımda yeterli bilgi bulunmamaktadır.' de ve dur — "
-        "başka yönlendirme veya tavsiye ekleme. "
-        "Cevabında hangi maddeye dayandığını mutlaka belirt (örneğin: 'Madde 53 uyarınca...').\n\n"
+        "Sen, vatandaşlara yardımcı olan bir Türk iş hukuku asistanısın. "
+        "Aşağıdaki kanun maddelerine dayanarak soruyu Türkçe yanıtla. Kurallara uy:\n"
+        "- Yalnızca verilen maddelere dayan; bu maddelerde soruyu yanıtlayacak "
+        "yeterli bilgi yoksa 'Bu konuya dair mevzuatımda yeterli bilgi "
+        "bulunmamaktadır.' de ve dur; başka tavsiye ekleme.\n"
+        "- Cevabı, hukuk bilmeyen bir vatandaşın kolayca anlayacağı sade ve "
+        "gündelik bir Türkçeyle yaz; ağır hukuki terimlerden kaçın, kullanman "
+        "gerekiyorsa parantez içinde kısaca açıkla.\n"
+        "- Doğruluktan ödün verme: maddedeki sayı, süre ve oranları (gün, hafta, "
+        "yüzde vb.) aynen ve eksiksiz aktar.\n"
+        "- Cevabının sonunda dayandığın maddeyi belirt (örneğin: 'Dayanak: Madde 53').\n\n"
         f"KANUN MADDELERİ:\n{context}\n\n"
         f"SORU: {question}\n\n"
         "CEVAP:"

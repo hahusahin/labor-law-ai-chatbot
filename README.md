@@ -8,7 +8,7 @@ A RAG-based question-answering app over Turkish labour law legislation. Ask a qu
 
 ## What it does
 
-Users ask questions like *"Yıllık iznim kaç gün?"* or *"Kıdem tazminatı nasıl hesaplanır?"* and get answers that cite the specific article from the İş Kanunu. The source reference is clickable — you can read the original article text right in the UI. No hallucinated answers without backing.
+Users ask questions like *"Yıllık iznim kaç gün?"* or *"Kıdem tazminatı nasıl hesaplanır?"* and get a plain-Turkish answer (no legalese) that cites the specific article from the İş Kanunu. The source reference is clickable — you can read the original article text right in the UI. No hallucinated answers without backing.
 
 ## How it works (RAG pipeline)
 
@@ -48,7 +48,7 @@ This RAG app is **measured**, with a reproducible offline eval harness in `backe
 - **Ground-truth test set** — 32 natural-language questions (27 answerable + 5 off-topic), several adapted from the official Ministry of Labour (CSGB) İş Kanunu FAQ, each mapped to the article(s) that actually contain the answer and verified against the source legislation.
 - **Two-layer scoring** (retrieval and generation fail independently, so they're measured separately):
   - *Retrieval* — is the correct article fetched? **recall@5 = 96%, recall@1 = 89%**.
-  - *Answer correctness* — an **LLM-as-judge** grades each generated answer against a source-grounded reference answer: **96% correct**, **93%** citing the right article.
+  - *Answer correctness* — an **LLM-as-judge** grades each generated answer against a source-grounded reference answer: **96% correct**, **96%** citing the right article.
 - **Abstention** — a tuned relevance-score gate makes off-topic questions return *"not in my scope"* with **zero** sources, instead of confidently citing irrelevant law: **100%** on the off-topic set.
 
 ```bash
