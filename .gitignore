@@ -4,6 +4,11 @@
 DEV_NOTES.md
 
 # ========================
+# Eval run artifacts (regenerated locally)
+# ========================
+backend/eval/.answer_eval_cache.json
+
+# ========================
 # Secrets
 # ========================
 .env

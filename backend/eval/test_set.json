@@ -1,81 +1,99 @@
 {
-  "version": 3,
-  "description": "Ground-truth eval set. In-scope questions (non-empty expected_articles) are written the way a real user would type to an AI assistant: a deliberate mix of questions that reuse the legal term (lexical match) and questions phrased around it without the term (semantic match), to test retrieval on both. Off-topic questions (empty expected_articles) are outside the labour-law knowledge base; the correct behavior is to retrieve nothing relevant — they exist to measure abstention and to gather the score distribution used to tune the relevance threshold (task 9.4). Hit = at least one expected article retrieved in top-k (any-match).",
+  "version": 5,
+  "description": "Ground-truth eval set. In-scope questions (non-empty expected_articles) carry a reference_answer: a concise gold answer grounded in the ingested legislation text (NOT outside knowledge), used by the LLM-as-judge in 9.3 to grade generated answers. Questions mix lexical and semantic phrasing. Off-topic questions (empty expected_articles, no reference_answer) are outside the knowledge base; the correct behavior is abstention. Retrieval hit = at least one expected article in top-k (any-match).",
   "items": [
     {
       "id": 1,
       "question": "Bir yıldır aynı yerde çalışıyorum, yılda kaç gün ücretli iznim var?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "53" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "53" }],
+      "reference_answer": "Hizmet süresi bir yıldan beş yıla kadar (beş yıl dâhil) olan işçiye yılda en az 14 gün ücretli yıllık izin verilir."
     },
     {
       "id": 2,
       "question": "Yıllık izne hak kazanmak için en az ne kadar çalışmış olmam gerekir?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "54" }]
+      "expected_articles": [
+        { "law": "İş Kanunu", "article": "53" },
+        { "law": "İş Kanunu", "article": "54" }
+      ],
+      "reference_answer": "Yıllık ücretli izne hak kazanmak için işçinin, deneme süresi dâhil, en az bir yıl çalışmış olması gerekir."
     },
     {
       "id": 3,
-      "question": "İşten çıkarılırsam çalıştığım yıllara karşılık bana toplu bir ödeme yapılır mı, şartları ne?",
-      "expected_articles": [{ "law": "1475 sayılı İş Kanunu", "article": "14" }]
+      "question": "İşten çıkarılırsam çalıştığım yıllara karşılık bana toplu bir ödeme yapılır mı, hangi şartlarda ve nasıl hesaplanır?",
+      "expected_articles": [{ "law": "1475 sayılı İş Kanunu", "article": "14" }],
+      "reference_answer": "İşçi en az bir yıl çalışmışsa ve sözleşme kanunda sayılan hâllerde (işverenin haklı sebep dışında feshi, işçinin haklı feshi, askerlik, emeklilik, kadının evlenmesi vb.) sona ererse kıdem tazminatına hak kazanır; her tam hizmet yılı için 30 günlük son brüt ücreti tutarında ödenir."
     },
     {
       "id": 4,
       "question": "İşveren beni çıkarmadan ne kadar süre önceden haber vermek zorunda?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "17" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "17" }],
+      "reference_answer": "Bildirim (ihbar) süreleri kıdeme göre değişir: işi 6 aydan az sürmüşse 2 hafta, 6 ay ile 1,5 yıl arası 4 hafta, 1,5 ile 3 yıl arası 6 hafta, 3 yıldan fazla ise 8 hafta önceden bildirim yapılması gerekir."
     },
     {
       "id": 5,
       "question": "Maaşım aylardır geç yatıyor; bu yüzden kendim işten ayrılsam tazminat hakkım olur mu?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "24" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "24" }],
+      "reference_answer": "Ücreti kanuna veya sözleşmeye uygun şekilde ödenmeyen işçi, iş sözleşmesini haklı nedenle derhal feshedebilir; bu durumda koşulları varsa kıdem tazminatına hak kazanır."
     },
     {
       "id": 6,
       "question": "Bir çalışanım üst üste birkaç gün habersiz işe gelmezse, işveren olarak onu tazminat ödemeden çıkarabilir miyim?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "25" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "25" }],
+      "reference_answer": "İşçi izin almadan veya haklı bir sebep olmadan ardı ardına iki iş günü, bir ayda iki kez tatil gününü izleyen iş günü ya da bir ayda üç iş günü işe gelmezse, işveren sözleşmeyi haklı nedenle (ihbarsız ve kıdem tazminatı ödemeden) feshedebilir."
     },
     {
       "id": 7,
       "question": "Patron hamile olduğumu öğrenince beni geçerli bir sebep göstermeden işten çıkardı. Bu ayrımcılık için ne kadar tazminat isteyebilirim?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "5" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "5" }],
+      "reference_answer": "Eşit davranma ilkesine aykırı (ayrımcılık) bir durumda işçi, dört aya kadar ücreti tutarında uygun bir tazminat ile yoksun bırakıldığı diğer haklarını talep edebilir."
     },
     {
       "id": 8,
       "question": "Fazla mesai yaptığımda saat ücretim ne kadar zamlı ödenir?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "41" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "41" }],
+      "reference_answer": "Her bir saat fazla çalışma için normal saat ücreti yüzde elli (%50) yükseltilerek, yani 1,5 katı olarak ödenir."
     },
     {
       "id": 9,
       "question": "Yasal olarak haftada en fazla kaç saat çalıştırılabilirim?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "63" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "63" }],
+      "reference_answer": "Genel bakımdan çalışma süresi haftada en çok 45 saattir."
     },
     {
       "id": 10,
       "question": "8 saatlik bir mesaide ne kadar mola hakkım var?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "68" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "68" }],
+      "reference_answer": "Yedi buçuk saatten fazla süren işlerde (8 saatlik mesai dâhil) en az bir saat ara dinlenmesi verilir."
     },
     {
       "id": 11,
       "question": "Doğum sonrası ne kadar ücretli izin kullanabilirim, ayrıca bebeğimi emzirmek için süt izni veriliyor mu?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "74" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "74" }],
+      "reference_answer": "Kadın işçi doğumdan sonra 16 hafta (doğumdan önceki 8 hafta ile birlikte toplam 24 hafta) çalıştırılmaz; ayrıca çocuğu bir yaşını doldurana kadar günde toplam 1,5 saat süt izni kullanır."
     },
     {
       "id": 12,
       "question": "Gece vardiyasında en fazla kaç saat çalıştırılabilirim?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "69" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "69" }],
+      "reference_answer": "İşçilerin gece çalışmaları günde yedi buçuk saati geçemez (kanunda sayılan istisnai işler hariç)."
     },
     {
       "id": 13,
       "question": "Maaşım zamanında ödenmezse işi bırakma hakkım var mı, kaç gün gecikmesi gerekiyor?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "34" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "34" }],
+      "reference_answer": "Ücreti, ödeme gününden itibaren 20 gün içinde (mücbir sebep dışında) ödenmeyen işçi, iş görme borcunu yerine getirmekten kaçınabilir (çalışmayı durdurabilir)."
     },
     {
       "id": 14,
       "question": "İhbar süresi içinde patron bana yeni iş aramam için izin vermesi gerekir mi?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "27" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "27" }],
+      "reference_answer": "İşveren, bildirim (ihbar) süresi içinde işçiye yeni iş bulması için iş saatleri içinde ve ücretten kesinti yapmadan günde en az iki saat iş arama izni vermek zorundadır."
     },
     {
       "id": 15,
       "question": "İşe yeni başlarken deneme süresi en fazla ne kadar olabilir?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "15" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "15" }],
+      "reference_answer": "Deneme süresi en çok iki ay olabilir; toplu iş sözleşmesiyle dört aya kadar uzatılabilir."
     },
     {
       "id": 16,
@@ -83,27 +101,32 @@
       "expected_articles": [
         { "law": "İş Kanunu", "article": "18" },
         { "law": "İş Kanunu", "article": "21" }
-      ]
+      ],
+      "reference_answer": "Mahkeme feshi geçersiz bulursa işveren işçiyi başvurusu üzerine bir ay içinde işe başlatmak zorundadır; başlatmazsa işçiye en az 4, en çok 8 aylık ücreti tutarında tazminat öder (ayrıca boşta geçen süre için en çok 4 aya kadar ücret ödenir)."
     },
     {
       "id": 17,
       "question": "İşveren aynı anda çok sayıda işçiyi işten çıkaracaksa bunu önceden kime bildirmek zorunda?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "29" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "29" }],
+      "reference_answer": "Toplu işçi çıkaracak işveren, durumu en az 30 gün önceden yazılı olarak işyeri sendika temsilcilerine, ilgili bölge müdürlüğüne ve Türkiye İş Kurumu'na bildirmek zorundadır."
     },
     {
       "id": 18,
       "question": "Patron disiplin cezası diye maaşımdan kesinti yapabilir mi, bir ayda en fazla ne kadar kesebilir?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "38" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "38" }],
+      "reference_answer": "Ücret kesme cezası ancak sözleşmede gösterilen sebeplerle verilebilir ve bir ayda iki günlük ücret tutarından (parça başı/akort işlerde işçinin iki günlük kazancından) fazla olamaz; kesinti sebebiyle birlikte işçiye derhal bildirilir."
     },
     {
       "id": 19,
       "question": "Kaç yaşından küçük çocuklar çalıştırılamaz?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "71" }]
+      "expected_articles": [{ "law": "İş Kanunu", "article": "71" }],
+      "reference_answer": "On beş yaşını doldurmamış çocukların çalıştırılması yasaktır; ancak on dört yaşını doldurmuş ve zorunlu ilköğretimi tamamlamış çocuklar, gelişimlerine ve okullarına engel olmayacak hafif işlerde çalıştırılabilir."
     },
     {
       "id": 20,
-      "question": "Çok sayıda personeli olan büyük şirketler engelli çalışan almak zorunda mı?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "30" }]
+      "question": "Çok sayıda personeli olan büyük şirketler engelli çalışan almak zorunda mı, hangi oranda?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "30" }],
+      "reference_answer": "Elli veya daha fazla işçi çalıştıran özel sektör işyerleri yüzde üç (%3) oranında engelli işçi çalıştırmak zorundadır (kamu işyerlerinde bu oran yüzde dörttür)."
     },
     {
       "id": 21,

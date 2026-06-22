@@ -11,8 +11,8 @@ The test set has two kinds of questions:
                 question should score clearly lower than an in-scope one.
 
 Run from the backend/ directory:
-    python eval/evaluate.py
-    python eval/evaluate.py --top-k 5
+    python eval/evaluate_retrieval.py
+    python eval/evaluate_retrieval.py --top-k 5
 """
 
 import argparse
