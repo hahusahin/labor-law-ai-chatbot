@@ -97,7 +97,7 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 
 ## Phase 1.5 — Evaluation
 
-- [ ] **9.1** 15–20 `(question → expected article)` test pairs as a JSON file
+- [x] **9.1** 15–20 `(question → expected article)` test pairs as a JSON file
 - [ ] **9.2** `backend/scripts/evaluate.py` — retrieval hit rate measurement
 - [ ] **9.3** Answer correctness score + report
 - [ ] **9.4** Relevance threshold (abstention) — gate retrieval by similarity `min_score`; off-topic
