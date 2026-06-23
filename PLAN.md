@@ -131,11 +131,12 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 - [x] **10.4** Backend `/query/stream` route — `StreamingResponse` (`text/event-stream`):
       retrieve → emit sources event → stream answer tokens → emit done. Abstention → stream the
       "not in scope" answer with zero sources.
-- [ ] **10.5** Gateway `/api/chat` — pass the upstream stream straight through (no buffering),
+- [x] **10.5** Gateway `/api/chat` — pass the upstream stream straight through (no buffering),
       forward `text/event-stream`.
-- [ ] **10.6** Frontend — consume the stream (`response.body.getReader()`), render tokens
+- [x] **10.6** Frontend — consume the stream (`response.body.getReader()`), render tokens
       incrementally, show the source chip first, keep the ~30s timeout + error handling.
-- [ ] **10.7** Manual end-to-end test + README note (streaming UX).
+      SSE parsing extracted to `frontend/src/lib/sse.ts` (generic async generator).
+- [x] **10.7** Manual end-to-end test + README note (streaming UX).
 
 ### Deferred (documented, not built) — revisit only if the corpus/eval changes
 

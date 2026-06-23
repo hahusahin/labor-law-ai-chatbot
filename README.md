@@ -8,7 +8,7 @@ A RAG-based question-answering app over Turkish labour law legislation. Ask a qu
 
 ## What it does
 
-Users ask questions like *"Yıllık iznim kaç gün?"* or *"Kıdem tazminatı nasıl hesaplanır?"* and get a plain-Turkish answer (no legalese) that cites the specific article from the İş Kanunu. The source reference is clickable — you can read the original article text right in the UI. No hallucinated answers without backing.
+Users ask questions like *"Yıllık iznim kaç gün?"* or *"Kıdem tazminatı nasıl hesaplanır?"* and get a plain-Turkish answer (no legalese) that cites the specific article from the İş Kanunu. Answers stream in live as the model generates them, and the source reference is clickable — you can read the original article text right in the UI. No hallucinated answers without backing.
 
 ## How it works (RAG pipeline)
 
@@ -45,9 +45,9 @@ The FastAPI service is layered (routes → services → repositories) with the v
 
 This RAG app is **measured**, with a reproducible offline eval harness in `backend/eval/`:
 
-- **Ground-truth test set** — 32 natural-language questions (27 answerable + 5 off-topic), several adapted from the official Ministry of Labour (CSGB) İş Kanunu FAQ, each mapped to the article(s) that actually contain the answer and verified against the source legislation.
+- **Ground-truth test set** — 30 natural-language questions (25 answerable + 5 off-topic), several adapted from the official Ministry of Labour (CSGB) İş Kanunu FAQ, each mapped to the article(s) that actually contain the answer and verified against the source legislation. The answerable set includes deliberately hard multi-part, exact-number and colloquially phrased questions.
 - **Two-layer scoring** (retrieval and generation fail independently, so they're measured separately):
-  - *Retrieval* — is the correct article fetched? **recall@5 = 96%, recall@1 = 89%**.
+  - *Retrieval* — is the correct article fetched? **recall@5 = 96%, recall@1 = 80%**.
   - *Answer correctness* — an **LLM-as-judge** grades each generated answer against a source-grounded reference answer: **96% correct**, **96%** citing the right article.
 - **Abstention** — a tuned relevance-score gate makes off-topic questions return *"not in my scope"* with **zero** sources, instead of confidently citing irrelevant law: **100%** on the off-topic set.
 
@@ -56,11 +56,7 @@ python eval/evaluate_retrieval.py    # retrieval recall@k
 python eval/evaluate_answers.py      # LLM-as-judge answer correctness
 ```
 
-These numbers are the **baseline** — Phase 2 is about measurably improving them.
-
-## What's next
-
-- **Phase 2:** hybrid search, reranking, query rewriting, SSE streaming — re-run the eval and show the score improving between phases.
+The harness is reproducible — rerun it after any change to catch regressions.
 
 ## Running locally
 

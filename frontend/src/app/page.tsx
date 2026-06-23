@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import { parseSSEStream } from "@/lib/sse";
 
 // ---------- types ----------------------------------------------------------
 
@@ -21,6 +22,13 @@ type Message =
   | { role: "user"; content: string }
   | { role: "assistant"; content: string; sources: SourceChunk[] }
   | { role: "error"; content: string; question: string };
+
+// SSE frames sent by the backend /query/stream endpoint (see PLAN.md 10.1).
+type StreamEvent =
+  | { type: "sources"; sources: SourceChunk[] }
+  | { type: "token"; text: string }
+  | { type: "done" }
+  | { type: "error"; message: string };
 
 // ---------- constants -------------------------------------------------------
 
@@ -126,6 +134,16 @@ export default function Home() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  // Append streamed text to the last (assistant) message as tokens arrive.
+  function appendToAssistant(text: string) {
+    setMessages((prev) => {
+      const last = prev[prev.length - 1];
+      if (last?.role !== "assistant") return prev;
+      const updated = { ...last, content: last.content + text };
+      return [...prev.slice(0, -1), updated];
+    });
+  }
+
   async function fetchAnswer(question: string) {
     setLoading(true);
     try {
@@ -136,13 +154,30 @@ export default function Home() {
         signal: AbortSignal.timeout(95_000),
       });
 
-      if (!res.ok) throw new Error(`Service returned ${res.status}`);
+      if (!res.ok || !res.body) throw new Error(`Service returned ${res.status}`);
 
-      const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.answer, sources: data.sources },
-      ]);
+      let sources: SourceChunk[] = [];
+      let started = false; // has the assistant message been created yet?
+
+      for await (const event of parseSSEStream<StreamEvent>(res.body)) {
+        if (event.type === "sources") {
+          sources = event.sources; // stash; attached when the first token lands
+        } else if (event.type === "token") {
+          if (started) {
+            appendToAssistant(event.text);
+          } else {
+            started = true;
+            setLoading(false);
+            const firstSources = sources; // const capture keeps React Compiler happy
+            setMessages((prev) => [
+              ...prev,
+              { role: "assistant", content: event.text, sources: firstSources },
+            ]);
+          }
+        } else if (event.type === "error") {
+          throw new Error(event.message);
+        }
+      }
     } catch (err) {
       const isTimeout =
         err instanceof DOMException && err.name === "TimeoutError";
