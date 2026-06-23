@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 
 from google import genai
 from google.genai import errors, types
@@ -19,6 +20,10 @@ class LLMService(ABC):
     @abstractmethod
     def generate(self, prompt: str) -> str:
         """Send a fully-assembled prompt and return the generated text."""
+
+    @abstractmethod
+    def generate_stream(self, prompt: str) -> Iterator[str]:
+        """Send a prompt and yield the generated text in fragments as they arrive."""
 
 
 # ---------------------------------------------------------------------------
@@ -55,6 +60,26 @@ class GeminiLLMService(LLMService):
         except Exception as e:
             raise NonRetryableError(f"Unexpected error: {e}") from e
 
+    def generate_stream(self, prompt: str) -> Iterator[str]:
+        try:
+            stream = self._client.models.generate_content_stream(
+                model=GEMINI_GENERATION_MODEL,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.2,
+                    max_output_tokens=2048,
+                ),
+            )
+            for chunk in stream:
+                if chunk.text:
+                    yield chunk.text
+        except errors.APIError as e:
+            if e.code in (429, 500, 503):
+                raise RetryableError(f"Retryable API error ({e.code}): {e.message}") from e
+            raise NonRetryableError(f"Non-retryable API error ({e.code}): {e.message}") from e
+        except Exception as e:
+            raise NonRetryableError(f"Unexpected error: {e}") from e
+
 
 # ---------------------------------------------------------------------------
 # OpenAI implementation
@@ -77,3 +102,15 @@ class OpenAILLMService(LLMService):
             timeout=TIMEOUT_SECONDS,
         )
         return response.choices[0].message.content
+
+    def generate_stream(self, prompt: str) -> Iterator[str]:
+        stream = self._client.chat.completions.create(
+            model=OPENAI_GENERATION_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            timeout=TIMEOUT_SECONDS,
+            stream=True,
+        )
+        for chunk in stream:
+            delta = chunk.choices[0].delta.content
+            if delta:
+                yield delta

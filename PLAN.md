@@ -108,20 +108,49 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
 
 ---
 
-## Phase 2 — Advanced RAG
+## Phase 2 — SSE Streaming
 
-- [ ] Hybrid search (dense + sparse BM25)
-- [ ] Reranking
-- [ ] Query rewriting
-- [ ] SSE streaming
-- [ ] Eval score comparison Phase 1.5 vs Phase 2
+### Block 10 — SSE Streaming
+
+- [x] **10.1** Design the SSE event protocol (sources event → token events → done event); document
+      the shape in this file. Keep the existing non-streaming `/query` for eval + as a fallback.
+
+  **Protocol** — each SSE frame is one line `data: <json>\n\n`. Order: one `sources` → many
+  `token` → one `done`. On failure mid-stream: an `error` frame. Off-topic = `sources` with `[]`
+  then the abstention text as tokens (frontend needs no special-case).
+  ```
+  data: {"type":"sources","sources":[{"law":"İş Kanunu","article_number":53,"text":"..."}]}
+  data: {"type":"token","text":"Yıllık "}
+  data: {"type":"done"}
+  data: {"type":"error","message":"..."}
+  ```
+- [x] **10.2** Backend `LLMService.generate_stream()` — Gemini streaming
+      (`generate_content_stream`). Keep `generate()` untouched so eval stays honest.
+- [ ] **10.3** Refactor `routes/query.py` — extract shared retrieval + abstention logic so both the
+      streaming and non-streaming paths reuse it (no duplicated retrieval/threshold code).
+- [ ] **10.4** Backend `/query/stream` route — `StreamingResponse` (`text/event-stream`):
+      retrieve → emit sources event → stream answer tokens → emit done. Abstention → stream the
+      "not in scope" answer with zero sources.
+- [ ] **10.5** Gateway `/api/chat` — pass the upstream stream straight through (no buffering),
+      forward `text/event-stream`.
+- [ ] **10.6** Frontend — consume the stream (`response.body.getReader()`), render tokens
+      incrementally, show the source chip first, keep the ~30s timeout + error handling.
+- [ ] **10.7** Manual end-to-end test + README note (streaming UX).
+
+### Deferred (documented, not built) — revisit only if the corpus/eval changes
+
+- [ ] Hybrid search (dense + sparse BM25) — deferred: retrieval already near-ceiling
+- [ ] Reranking — deferred: would target the 4 rank-2 hits, but too few to measure honestly
+- [ ] Query rewriting — deferred: would target the 1 reasoning miss (id 5), not worth the metric noise
+- [ ] (Optional Phase 1.5 refinement) Per-article *coverage* recall for multi-part questions
 
 ---
 
-## Deploy (after Phase 1 is complete)
+## Deploy
 
-- [ ] Deploy backend to Render (`backend/` root dir, env vars)
-- [ ] Deploy frontend to Vercel (`frontend/` root dir, `AI_SERVICE_URL=<render-url>`)
+- [x] Deploy backend to Render (`backend/` root dir, env vars)
+- [x] Deploy frontend to Vercel (`frontend/` root dir, `AI_SERVICE_URL=<render-url>`) — live at
+      labor-law-ai-chatbot.vercel.app
 
 ---
 
