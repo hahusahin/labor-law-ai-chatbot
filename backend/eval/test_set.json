@@ -1,6 +1,6 @@
 {
-  "version": 6,
-  "description": "Ground-truth eval set. In-scope questions (non-empty expected_articles) carry a reference_answer: a concise gold answer grounded in the ingested legislation text (NOT outside knowledge), used by the LLM-as-judge in 9.3 to grade generated answers. Questions mix lexical and semantic phrasing. ids 26-32 are harder, indirectly-phrased questions adapted from the official CSGB İş Kanunu FAQ (verified against our ingested articles). Off-topic questions (empty expected_articles, no reference_answer) are outside the knowledge base; the correct behavior is abstention. Retrieval hit = at least one expected article in top-k (any-match).",
+  "version": 7,
+  "description": "Ground-truth eval set. In-scope questions (non-empty expected_articles) carry a reference_answer: a concise gold answer grounded in the ingested legislation text (NOT outside knowledge), used by the LLM-as-judge in 9.3 to grade generated answers. Questions mix lexical and semantic phrasing. ids 21-25 are harder, multi-part, exact-number and colloquially phrased questions to stress-test recall and reasoning. Off-topic questions (empty expected_articles, no reference_answer) are outside the knowledge base; the correct behavior is abstention. Retrieval hit = at least one expected article in top-k (any-match).",
   "items": [
     {
       "id": 1,
@@ -130,73 +130,68 @@
     },
     {
       "id": 21,
+      "question": "52 yaşındayım, yeni girdiğim şirkette 10 aydır çalışıyorum. Önümüzdeki hafta yıllık izne çıkıp 10 gününü şimdi, kalanını kışın kullanabilir miyim?",
+      "expected_articles": [
+        { "law": "İş Kanunu", "article": "53" },
+        { "law": "İş Kanunu", "article": "54" },
+        { "law": "İş Kanunu", "article": "56" }
+      ],
+      "reference_answer": "İşçi 10 aydır çalıştığı için henüz yıllık ücretli izne hak kazanmamıştır, çünkü hak kazanma şartı en az 1 yıl çalışmaktır (Madde 54). Eğer 1 yılı doldurup hak kazansaydı, 50 yaşın üzerindeki işçilerin yıllık izni 20 günden az olamayacağı için (Madde 53) ve izin tarafların anlaşmasıyla bir bölümü 10 günden aşağı olmamak üzere bölünebileceği için (Madde 56) bu şekilde bir kullanım anlaşmayla mümkün olabilirdi."
+    },
+    {
+      "id": 22,
+      "question": "Sözleşmemde deneme süresi yazmıyordu, işe gireli 5 ay oldu ama dün performans gerekçesiyle hiç beklemeden kapının önüne koydular. Hem ihbar hem kıdem tazminatı almam gerekmiyor mu?",
+      "expected_articles": [
+        { "law": "1475 sayılı İş Kanunu", "article": "14" },
+        { "law": "İş Kanunu", "article": "17" }
+      ],
+      "reference_answer": "Kıdem tazminatına hak kazanmak için aynı işyerinde en az 1 yıl çalışmış olmak şarttır, bu yüzden 5 aylık çalışma için kıdem tazminatı ödenmez (1475/14). Ancak deneme süresi fesihte ihbar yükümlülüğünü kaldırmadığı ve işçinin kıdemi 6 aydan az olduğu için, işveren 2 haftalık ihbar süresine uymadan işten çıkardığından ihbar tazminatı ödemek zorundadır (Madde 17)."
+    },
+    {
+      "id": 23,
+      "question": "Hava muhalefeti ve sel yüzünden dükkan 4 gün kapalı kaldı. Patron 'haftaya iş başı yapınca her gün normal mesainin üstüne dörder saat daha kalıp bu günleri telafi edeceksiniz, telafi olduğu için de mesai ücreti falan yok' diyor. Bu yasal mı?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "64" }],
+      "reference_answer": "Zorunlu nedenlerle işin durması halinde işveren 4 ay içinde telafi çalışması yaptırabilir ve bu çalışmalar fazla çalışma sayılmadığı için ek ücret ödenmez. Ancak telafi çalışması günde 3 saatten fazla olamaz ve her halükarda günlük en çok çalışma süresi olan 11 saati aşamaz; bu nedenle günlük 4 saat telafi çalışması yaptırılması yasal değildir."
+    },
+    {
+      "id": 24,
+      "question": "İşe başlayalı daha 4 ay oldu. Geçen hafta ağır bir fıtık ameliyatı geçirdim ve doktor 25 gün rapor yazdı. Patron 'bize devamsızlık yapan adam yaramaz' diyerek beni hemen haklı nedenle kovabilir mi, ihbar süresine eklenen o sınır doldu mu?",
+      "expected_articles": [
+        { "law": "İş Kanunu", "article": "17" },
+        { "law": "İş Kanunu", "article": "25" }
+      ],
+      "reference_answer": "İşçinin hastalık nedeniyle raporlu olduğu durumlarda işverenin haklı nedenle derhal fesih hakkı (Madde 25/I-b), rapor süresinin işçinin ihbar süresini 6 hafta aşması halinde doğar. 4 aylık kıdemi olan işçinin ihbar süresi 2 haftadır (Madde 17); dolayısıyla rapor süresinin ihbar süresini aşma sınırı 2 hafta + 6 hafta = 8 haftadır (56 gün). 25 günlük rapor bu sınırı aşmadığı için işverenin rapor süresi içinde sözleşmeyi haklı nedenle derhal feshetme hakkı yoktur."
+    },
+    {
+      "id": 25,
+      "question": "Ben asıl firmanın fabrikasında taşeron şirkete bağlı temizlikçi olarak çalışıyorum. Taşeron firma 2 aydır maaşımı yatırmıyor. Fabrika sahibine gittim, 'benimle sözleşmen yok, git taşeronla çöz' diyor. Ana firmanın yasal olarak hiç mi sorumluluğu yok, kime başvurmalıyım?",
+      "expected_articles": [{ "law": "İş Kanunu", "article": "2" }],
+      "reference_answer": "İş Kanunu Madde 2'ye göre, asıl işveren (fabrika sahibi), alt işverenin (taşeronun) işçilerine karşı o işyeriyle ilgili olarak Kanundan, iş sözleşmesinden veya alt işverenin taraf olduğu toplu iş sözleşmesinden doğan yükümlülüklerinden alt işveren ile birlikte müteselsilen (birlikte) sorumludur. Bu nedenle ana firmanın 'sorumluluğum yok' iddiası geçersizdir; işçi ücret alacağı için her iki firmaya birden başvurabilir veya dava açabilir."
+    },
+    {
+      "id": 26,
       "question": "Ev sahibim kira kontratımı süresi dolmadan tek taraflı feshedebilir mi?",
       "expected_articles": []
     },
     {
-      "id": 22,
+      "id": 27,
       "question": "Bu hafta sonu hava yağmurlu olacak mı?",
       "expected_articles": []
     },
     {
-      "id": 23,
+      "id": 28,
       "question": "Aracımın muayene cezasını kaç gün içinde ödemem gerekiyor?",
       "expected_articles": []
     },
     {
-      "id": 24,
+      "id": 29,
       "question": "Gelir vergisi dilimleri bu yıl ne kadar?",
       "expected_articles": []
     },
     {
-      "id": 25,
+      "id": 30,
       "question": "Bana güzel bir makarna tarifi verir misin?",
       "expected_articles": []
-    },
-    {
-      "id": 26,
-      "question": "Ücreti zamanında ödenmeyen işçi, gecikme için faiz isteyebilir mi?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "34" }],
-      "reference_answer": "Gününde ödenmeyen ücretler için, ödeme gününden itibaren mevduata uygulanan en yüksek faiz oranı uygulanır."
-    },
-    {
-      "id": 27,
-      "question": "Fazla çalışma karşılığında zamlı ücret yerine serbest zaman kullanmayı seçtim; bu izni ne kadar süre içinde kullanmam gerekir?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "41" }],
-      "reference_answer": "Fazla çalışma veya fazla sürelerle çalışma karşılığında zamlı ücret yerine serbest zaman kullanmayı seçen işçi, bu serbest zamanı altı ay içinde, çalışma süreleri içinde ve ücretinde kesinti olmadan kullanır."
-    },
-    {
-      "id": 28,
-      "question": "Doğum nedeniyle çalışılmayan süreler, yıllık ücretli izne hak kazanmada çalışılmış gibi sayılır mı?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "55" }],
-      "reference_answer": "Kadın işçilerin 74. madde gereğince doğumdan önce ve sonra çalıştırılmadıkları süreler, yıllık ücretli izin hakkının hesabında çalışılmış gibi sayılır."
-    },
-    {
-      "id": 29,
-      "question": "İşveren çalışma şartlarımda esaslı bir değişiklik yapmak isterse buna uymak zorunda mıyım, kabul etmezsem ne olur?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "22" }],
-      "reference_answer": "İşveren çalışma koşullarında esaslı değişikliği ancak yazılı olarak bildirip işçinin altı iş günü içinde yazılı kabulüyle yapabilir; işçi kabul etmezse değişiklik onu bağlamaz, işveren ise ancak geçerli bir nedene dayanarak iş sözleşmesini feshedebilir."
-    },
-    {
-      "id": 30,
-      "question": "İşveren, tatil öncesi/sonrası verdiği izin karşılığında sonradan telafi çalışması yaptırabilir mi, hangi sınırlarla?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "64" }],
-      "reference_answer": "İşveren, zorunlu nedenler veya bayram/tatil ya da işçinin talebiyle verilen izin gibi hallerde çalışılmayan süreler için dört ay içinde telafi çalışması yaptırabilir; bu çalışma fazla çalışma sayılmaz, günde en çok üç saat olabilir ve tatil günlerinde yaptırılamaz."
-    },
-    {
-      "id": 31,
-      "question": "Belirli süreli bir iş sözleşmesiyle çalışıyorsam, işverenin yine de önceden bildirim (ihbar) sürelerine uyması gerekir mi?",
-      "expected_articles": [{ "law": "İş Kanunu", "article": "17" }],
-      "reference_answer": "Bildirim (ihbar) süreleri yalnızca belirsiz süreli iş sözleşmelerinin feshi için öngörülmüştür; belirli süreli sözleşmeler süresinin bitiminde kendiliğinden sona erdiği için bu sürelere uyma zorunluluğu yoktur."
-    },
-    {
-      "id": 32,
-      "question": "İşveren, beni ahlak ve iyiniyet kurallarına aykırılık gerekçesiyle işten çıkarırsa kıdem tazminatı alabilir miyim?",
-      "expected_articles": [
-        { "law": "1475 sayılı İş Kanunu", "article": "14" },
-        { "law": "İş Kanunu", "article": "25" }
-      ],
-      "reference_answer": "İşveren feshi 25. maddenin (II) numaralı bendindeki ahlak ve iyiniyet kurallarına aykırılık sebeplerine dayanıyorsa işçi kıdem tazminatına hak kazanamaz; bu sebepler dışındaki işveren fesihlerinde ise (en az bir yıllık kıdem şartıyla) kıdem tazminatı ödenir."
     }
   ]
 }
