@@ -1,4 +1,9 @@
+import json
+from collections.abc import Iterator
+from dataclasses import dataclass
+
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 
 from core.config import settings
 from core.errors import NonRetryableError, RetryableError
@@ -15,6 +20,9 @@ OUT_OF_SCOPE_MESSAGE = (
     "Bu konuya dair mevzuatımda yeterli bilgi bulunmamaktadır. "
     "Lütfen sorunuzu Türk iş hukuku kapsamında ifade edin."
 )
+
+# User-facing message streamed when generation fails mid-request (Turkish UX).
+STREAM_ERROR_MESSAGE = "Şu anda yanıt oluşturulamıyor. Lütfen birazdan tekrar deneyin."
 
 _embedding_service = GeminiEmbeddingService(api_key=settings.gemini_api_key)
 _llm_service = GeminiLLMService(api_key=settings.gemini_api_key)
@@ -52,28 +60,8 @@ def _build_prompt(question: str, context: str) -> str:
     )
 
 
-@router.post("/query", response_model=QueryResponse)
-def query(request: QueryRequest) -> QueryResponse:
-    question_vector = _embedding_service.embed(request.question)
-    matches = _repo.query(vector=question_vector, top_k=TOP_K)
-
-    # Relevance gate: if even the best match is below the threshold, the question
-    # is out of scope — abstain with zero sources (no junk context, no junk chips).
-    if not matches or matches[0].score < settings.relevance_min_score:
-        return QueryResponse(answer=OUT_OF_SCOPE_MESSAGE, sources=[])
-
-    context = _build_context(matches)
-
-    try:
-        answer = _llm_service.generate(_build_prompt(request.question, context))
-    except NonRetryableError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except RetryableError:
-        raise HTTPException(status_code=503, detail="The AI service is temporarily unavailable. Please try again in a moment.")
-    except Exception:
-        raise HTTPException(status_code=503, detail="LLM service temporarily unavailable.")
-
-    sources = [
+def _build_sources(matches) -> list[SourceChunk]:
+    return [
         SourceChunk(
             law=m.metadata.get("law", "İş Kanunu"),
             article_number=str(int(m.metadata.get("article_number", 0))),
@@ -84,4 +72,89 @@ def query(request: QueryRequest) -> QueryResponse:
         for m in matches
     ]
 
-    return QueryResponse(answer=answer, sources=sources)
+
+@dataclass
+class PreparedQuery:
+    """Outcome of retrieval + relevance gating, shared by both query paths.
+
+    prompt is None when the question is out of scope — the caller should abstain
+    (return / stream OUT_OF_SCOPE_MESSAGE) with the empty sources list.
+    """
+    sources: list[SourceChunk]
+    prompt: str | None
+
+
+def _prepare(question: str) -> PreparedQuery:
+    """Embed, retrieve, and apply the relevance gate. Identical for streaming and
+    non-streaming so both honour the same abstention behaviour eval measures."""
+    question_vector = _embedding_service.embed(question)
+    matches = _repo.query(vector=question_vector, top_k=TOP_K)
+
+    # Relevance gate: if even the best match is below the threshold, the question
+    # is out of scope — abstain with zero sources (no junk context, no junk chips).
+    if not matches or matches[0].score < settings.relevance_min_score:
+        return PreparedQuery(sources=[], prompt=None)
+
+    prompt = _build_prompt(question, _build_context(matches))
+    return PreparedQuery(sources=_build_sources(matches), prompt=prompt)
+
+
+@router.post("/query", response_model=QueryResponse)
+def query(request: QueryRequest) -> QueryResponse:
+    prepared = _prepare(request.question)
+    if prepared.prompt is None:
+        return QueryResponse(answer=OUT_OF_SCOPE_MESSAGE, sources=[])
+
+    try:
+        answer = _llm_service.generate(prepared.prompt)
+    except NonRetryableError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except RetryableError:
+        raise HTTPException(status_code=503, detail="The AI service is temporarily unavailable. Please try again in a moment.")
+    except Exception:
+        raise HTTPException(status_code=503, detail="LLM service temporarily unavailable.")
+
+    return QueryResponse(answer=answer, sources=prepared.sources)
+
+
+def _sse(payload: dict) -> str:
+    """Format one SSE frame: a single `data:` line plus the blank-line delimiter.
+    ensure_ascii=False keeps Turkish characters intact instead of \\uXXXX escapes."""
+    return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+
+
+@router.post("/query/stream")
+def query_stream(request: QueryRequest) -> StreamingResponse:
+    def event_stream() -> Iterator[str]:
+        # Retrieval + gating happen before any frame is sent, so a failure here
+        # can still surface as a clean error frame with nothing half-streamed.
+        try:
+            prepared = _prepare(request.question)
+        except Exception:
+            yield _sse({"type": "error", "message": STREAM_ERROR_MESSAGE})
+            return
+
+        # Sources first (empty list when out of scope) — chips can render while
+        # the answer is still typing.
+        yield _sse({"type": "sources", "sources": [s.model_dump() for s in prepared.sources]})
+
+        try:
+            if prepared.prompt is None:
+                # Out of scope: stream the fixed abstention text as the answer.
+                yield _sse({"type": "token", "text": OUT_OF_SCOPE_MESSAGE})
+            else:
+                for piece in _llm_service.generate_stream(prepared.prompt):
+                    yield _sse({"type": "token", "text": piece})
+        except Exception:
+            yield _sse({"type": "error", "message": STREAM_ERROR_MESSAGE})
+            return
+
+        yield _sse({"type": "done"})
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        # Defensive against proxy buffering (nginx/Render): without these a proxy
+        # may hold the whole response, killing the stream. See 10.5 gateway note.
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )

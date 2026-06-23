@@ -126,9 +126,9 @@ Mark each task `- [ ]` → `- [x]` only after explicit developer approval.
   ```
 - [x] **10.2** Backend `LLMService.generate_stream()` — Gemini streaming
       (`generate_content_stream`). Keep `generate()` untouched so eval stays honest.
-- [ ] **10.3** Refactor `routes/query.py` — extract shared retrieval + abstention logic so both the
+- [x] **10.3** Refactor `routes/query.py` — extract shared retrieval + abstention logic so both the
       streaming and non-streaming paths reuse it (no duplicated retrieval/threshold code).
-- [ ] **10.4** Backend `/query/stream` route — `StreamingResponse` (`text/event-stream`):
+- [x] **10.4** Backend `/query/stream` route — `StreamingResponse` (`text/event-stream`):
       retrieve → emit sources event → stream answer tokens → emit done. Abstention → stream the
       "not in scope" answer with zero sources.
 - [ ] **10.5** Gateway `/api/chat` — pass the upstream stream straight through (no buffering),
