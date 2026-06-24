@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 780" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#64748b"/>
+    </marker>
+    <marker id="aS" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#0d9488"/>
+    </marker>
+    <marker id="aSb" markerWidth="9" markerHeight="9" refX="2" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M7,0 L0,3 L7,6 Z" fill="#0d9488"/>
+    </marker>
+    <style>
+      .h     { font-size: 24px; font-weight: 800; fill: #0f172a; }
+      .sub   { font-size: 14px; fill: #64748b; }
+      .sec   { font-size: 15px; font-weight: 800; }
+      .main  { font-size: 15px; font-weight: 700; fill: #0f172a; }
+      .small { font-size: 12.5px; fill: #64748b; }
+      .lbl   { font-size: 12px; font-weight: 600; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1020" height="780" fill="#f8fafc"/>
+  <text x="510" y="44" text-anchor="middle" class="h">Labour Law Assistant — How RAG works</text>
+  <text x="510" y="70" text-anchor="middle" class="sub">The AI grounds every answer in real legislation articles and shows the source</text>
+
+  <!-- ============ STEP 1: INGEST ============ -->
+  <text x="60" y="106" class="sec" fill="#b45309">1 ·  PREPARATION  —  load the legislation into the database  (offline, once)</text>
+
+  <!-- I1 -->
+  <rect x="60" y="118" width="270" height="66" rx="11" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
+  <text x="78" y="148" class="main">📄  Labour Law + Regulations</text>
+  <text x="78" y="169" class="small">raw legislation text</text>
+  <!-- I2 -->
+  <rect x="375" y="118" width="270" height="66" rx="11" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
+  <text x="393" y="148" class="main">✂️  Split into articles</text>
+  <text x="393" y="169" class="small">each article = one chunk</text>
+  <!-- I3 -->
+  <rect x="690" y="118" width="270" height="66" rx="11" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
+  <text x="708" y="148" class="main">🔢  Turn into meaning-vectors</text>
+  <text x="708" y="169" class="small">embed each article's meaning as numbers</text>
+
+  <line x1="330" y1="151" x2="371" y2="151" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="645" y1="151" x2="686" y2="151" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- I3 -> DB (store) -->
+  <path d="M825,184 C825,250 660,245 600,300" fill="none" stroke="#f59e0b" stroke-width="2.2" marker-end="url(#a)"/>
+  <text x="700" y="240" class="lbl" fill="#b45309">store</text>
+
+  <!-- ============ VECTOR DB ============ -->
+  <rect x="360" y="300" width="300" height="96" rx="13" fill="#f0fdfa" stroke="#0d9488" stroke-width="2.5"/>
+  <text x="510" y="332" text-anchor="middle" class="main" font-size="16" fill="#0f766e">🗄️  VECTOR DATABASE</text>
+  <text x="510" y="354" text-anchor="middle" class="small">Pinecone — meaning-vectors of every article</text>
+  <text x="510" y="375" text-anchor="middle" class="small">search by <tspan font-weight="700" fill="#0f766e">meaning</tspan>, not by keyword</text>
+
+  <!-- ============ STEP 2: QUERY ============ -->
+  <text x="60" y="436" class="sec" fill="#1d4ed8">2 ·  QUESTION &amp; ANSWER  —  on every question</text>
+
+  <!-- Q1 -->
+  <rect x="60" y="448" width="270" height="66" rx="11" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="78" y="478" class="main">💬  User question</text>
+  <text x="78" y="499" class="small">"How many days of annual leave?"</text>
+  <!-- Q2 -->
+  <rect x="375" y="448" width="270" height="66" rx="11" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="393" y="478" class="main">🔢  Turn question into a vector</text>
+  <text x="393" y="499" class="small">same "meaning" language</text>
+  <!-- Q3 -->
+  <rect x="690" y="448" width="270" height="66" rx="11" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="708" y="478" class="main">🔎  Fetch the closest articles</text>
+  <text x="708" y="499" class="small">top 5 articles nearest in meaning</text>
+
+  <line x1="330" y1="481" x2="371" y2="481" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="645" y1="481" x2="686" y2="481" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- DB <-> Q3 (search & return, bidirectional) -->
+  <path d="M662,372 L740,446" fill="none" stroke="#0d9488" stroke-width="2.2" marker-start="url(#aSb)" marker-end="url(#aS)"/>
+  <text x="708" y="420" class="lbl" fill="#0f766e">search &amp; return</text>
+
+  <!-- Q3 -> Q4 (down) -->
+  <line x1="825" y1="514" x2="825" y2="586" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- Q4 -->
+  <rect x="690" y="588" width="270" height="66" rx="11" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="708" y="618" class="main">🧩  Question + found articles</text>
+  <text x="708" y="639" class="small">= the prompt sent to the AI</text>
+  <!-- Q5 (LLM, highlighted) -->
+  <rect x="375" y="588" width="270" height="66" rx="11" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2.2"/>
+  <text x="393" y="618" class="main">🤖  Gemini writes the answer</text>
+  <text x="393" y="639" class="small">grounded only in these articles</text>
+  <!-- Q6 (answer) -->
+  <rect x="60" y="588" width="270" height="66" rx="11" fill="#f0fdf4" stroke="#22c55e" stroke-width="2.2"/>
+  <text x="78" y="618" class="main">✅  Sourced answer</text>
+  <text x="78" y="639" class="small">"...Source: Labour Law Article 53"</text>
+
+  <line x1="688" y1="621" x2="647" y2="621" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="373" y1="621" x2="332" y2="621" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- ============ WHY RAG footer ============ -->
+  <rect x="60" y="694" width="900" height="58" rx="11" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5"/>
+  <text x="80" y="722" class="main" fill="#92400e">💡  Why RAG?</text>
+  <text x="80" y="742" class="small" fill="#78350f">An AI on its own can make facts up. Here every answer is grounded in real legislation articles and shows its source — verifiable and trustworthy.</text>
+</svg>

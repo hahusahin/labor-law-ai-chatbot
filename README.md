@@ -12,6 +12,8 @@ Users ask questions like *"Yıllık iznim kaç gün?"* or *"Kıdem tazminatı na
 
 ## How it works (RAG pipeline)
 
+![How the RAG pipeline works: legislation is chunked and embedded into Pinecone; questions are embedded, matched against stored articles, and answered by Gemini grounded in those articles with the source shown](docs/rag-overview.svg)
+
 1. Turkish labour law legislation is pre-chunked by article and embedded with **Gemini embeddings** into **Pinecone**
 2. When a question comes in, it's embedded the same way and matched against the stored vectors
 3. The top matching articles are passed as context to **Gemini API**, which generates the answer
