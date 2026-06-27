@@ -234,12 +234,15 @@ export default function Home() {
         <div className="px-4 py-6 max-w-3xl mx-auto space-y-6">
           {isEmpty && (
             <div className="flex flex-col items-center gap-6 pt-16 text-center">
-              <div>
+              <div className="max-w-md">
                 <p className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-                  Merhaba
+                  İş hukuku sorularınızı kanuna dayanarak yanıtlar
                 </p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  İş hukukuyla ilgili bir soru sorun
+                <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+                  Yıllık izin, kıdem tazminatı, fazla mesai ve daha fazlası.
+                  Her yanıt doğrudan 4857 sayılı İş Kanunu ve ilgili mevzuat
+                  maddelerinden gelir — kaynak madde her cevabın altında
+                  gösterilir.
                 </p>
               </div>
               <div className="flex flex-wrap justify-center gap-2">
@@ -253,6 +256,9 @@ export default function Home() {
                   </button>
                 ))}
               </div>
+              <p className="text-xs text-zinc-400 dark:text-zinc-600">
+                Yanıtlar bilgilendirme amaçlıdır, hukuki tavsiye niteliği taşımaz.
+              </p>
             </div>
           )}
 
